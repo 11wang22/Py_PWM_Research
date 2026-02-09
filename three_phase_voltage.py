@@ -57,7 +57,7 @@ class ThreePhaseVoltage:
             va='center',                 # 垂直居中
             color='#000000',            # 文字颜色（与曲线呼应，提升美观度）
             # 可选：添加白色背景框，避免文字被填充色遮挡
-            bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7, edgecolor='none')
+            # bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7, edgecolor='none')
         )
         
     def three_voltage_plot(self,Picsize=(7, 4.3)):
@@ -95,8 +95,6 @@ class ThreePhaseVoltage:
             x_end = sector_list[i+1]
             self.fill_sector(ax, x_start, x_end, color=sector_color[i % len(sector_color)],label=sector_labels[i % len(sector_labels)])
         
-        x = np.linspace(0, 10, 100)
-        y = np.sin(x)
         plt.show()
             
 if __name__ == "__main__":
