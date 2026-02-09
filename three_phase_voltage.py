@@ -13,8 +13,8 @@ class ThreePhaseVoltage:
 
         self.time = np.linspace(0, 0.04, 10000)  # 50 Hz fundamental frequency
         self.angle = self.time * 2 * np.pi * 50  # Phase angle over time
-        self.degree = self.angle * 180 / np.pi
-        self.start_anlge = np.pi / 6 # Starting phase angle
+        self.degree = self.angle * 180 / np.pi   
+        self.start_anlge = np.pi / 2 # Starting phase angle
         self.Va = []
         self.Vb = []
         self.Vc = []
