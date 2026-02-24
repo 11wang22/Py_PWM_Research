@@ -1,5 +1,5 @@
 ####### This file is aimed at plotting the three-phase voltage waveforms
-####### for a given modulation index and phase angle from 0~2\pi.
+####### for a given modulation index and phase angle from 0~2 pi.
 import numpy as np
 import matplotlib.pyplot as plt
 
