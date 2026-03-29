@@ -31,7 +31,6 @@ class ThreePhase:
     def ThreePhasePlt(self,Picsize=(7, 4.2)):
         plt.rcParams["font.family"] = "Times New Roman"  # 设置全局西文字体为 Times New Roman
         plt.rcParams["axes.unicode_minus"] = False       # 解决负号显示为方块的问题
-        plt.rcParams['font.family'] = 'Times New Roman'
         plt.rcParams['mathtext.fontset'] = 'stix'  # 让数学符号也匹配 Times 风格
         
         fig,ax = plt.subplots(figsize=Picsize, layout='constrained')
