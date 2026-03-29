@@ -1,7 +1,7 @@
 clc,clear
 
 %%% system variable parameters
-Modulation = 0:5e-2:1.0; 
+Modulation = 0:5e-2:2 / sqrt(3); 
 wt = 0:5e-2:2 * pi / 3;
 [X,Y] = meshgrid(Modulation,wt);
 [Lenx,Leny] = size(X);
