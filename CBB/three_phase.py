@@ -55,7 +55,7 @@ class ThreePhase:
         plt.show()
 
 if __name__ == "__main__":
-    modulation_index = 0.85  # Example modulation index
+    modulation_index = 0.90  # Example modulation index
     ClassThreePhaseVoltage = ThreePhase(modulation_index)
     ClassThreePhaseVoltage.ThreePhasePlt()
     
