@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class ThreePhase:
-    def __init__(self,modulation_index):
+    def __init__(self,modulation_index,start_angle = np.pi / 6):
         ##### set modulation index limitation 0~2/sqrt(3)
         modulation_index = max(0,modulation_index)
         modulation_index = min(2 / np.sqrt(3),modulation_index)
@@ -11,7 +11,7 @@ class ThreePhase:
         
         ##### calculate three-phase voltage according to voltage max/mid/min division
         self.wt = np.linspace(0, 2 * np.pi / 3, 10000)
-        self.umax = modulation_index * np.sin(self.wt + np.pi / 6)
+        self.umax = modulation_index * np.sin(self.wt + start_angle)
         self.umid = np.zeros_like(self.wt)
         self.umin = np.zeros_like(self.wt)
 
