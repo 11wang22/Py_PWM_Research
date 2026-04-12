@@ -15,17 +15,12 @@ class ThreePhaseVoltage:
         self.angle = self.time * 2 * np.pi * 50  # Phase angle over time
         self.degree = self.angle * 180 / np.pi   
         self.start_anlge = np.pi / 6 # Starting phase angle
-        self.Va = []
-        self.Vb = []
-        self.Vc = []
-        self.Ymax = 1.3
-        self.Ymin = -self.Ymax
-
-    def calculate_voltages(self):
         self.Va = self.modulation_index * np.sin(2 * np.pi * 50 * self.time + self.start_anlge)
         self.Vb = self.modulation_index * np.sin(2 * np.pi * 50 * self.time - 2 * np.pi / 3 + self.start_anlge)
         self.Vc = self.modulation_index * np.sin(2 * np.pi * 50 * self.time + 2 * np.pi / 3 + self.start_anlge)
-        
+        self.Ymax = 1.3
+        self.Ymin = -self.Ymax
+
     def fill_sector(self,ax, x_start, x_end, **parameters):
         if 'color' in parameters:
             func_color = parameters['color']
@@ -61,9 +56,6 @@ class ThreePhaseVoltage:
         )
         
     def three_voltage_plot(self,Picsize=(7, 4.3)):
-        if not self.Va or not self.Vb or not self.Vc:
-            self.calculate_voltages()
-        
         plt.rcParams["font.family"] = "Times New Roman"  # 设置全局西文字体为 Times New Roman
         plt.rcParams["axes.unicode_minus"] = False        # 解决负号显示为方块的问题
         fig,ax = plt.subplots(figsize=Picsize, layout='constrained')

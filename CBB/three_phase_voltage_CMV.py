@@ -6,10 +6,6 @@ import matplotlib.pyplot as plt
 class ThreePhaseVoltage:
     def __init__(self, modulation_index):
         self.modulation_index = modulation_index
-        self.XYlabels = ['Time (s)', 'Voltage (p.u.)']
-        self.XYlabels_fontsize = 14
-        self.Gridlabels_fontsize = 12
-        self.legend_fontsize = 14
 
         self.time = np.linspace(0, 0.02, 10000)  # 50 Hz fundamental frequency
         self.angle = self.time * 2 * np.pi * 50  # Phase angle over time
@@ -92,21 +88,25 @@ class ThreePhaseVoltage:
         plt.rcParams['mathtext.fontset'] = 'stix'  # set math font to match Times style
         
         fig,ax = plt.subplots(figsize=Picsize, layout='constrained')
-        xticks = [0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]
-        xtick_labels = [r'$0$', r'$\pi/2$', r'$\pi$', r'$3\pi/2$',r'$2\pi$']
         
         ax.plot(self.angle, self.Vzmax, color='#FFE699',linewidth=2)
         ax.plot(self.angle, self.Vzmin, color='#D3ECB9',linewidth=2)
         ax.plot(self.angle, self.Vzs_SV, color='#FF9999',linewidth=2)
         ax.plot(self.angle, self.Vzs_ZCD, color="#A099FF",linewidth=2)
 
-        ax.set_xlabel('Angle (rad)',fontweight='bold')
+        for label in ax.get_xticklabels() + ax.get_yticklabels():
+            label.set_fontsize(8)  # fontsize
+            label.set_fontweight('bold')  # font weight bold
+        ax.set_xlabel('Angle (rad)',fontsize=14,fontweight='bold')
         ax.set_ylabel('zero-sequence Voltage (p.u.)',fontsize=14,fontweight='bold')
         ax.tick_params(axis='y', labelsize=14)
         ax.set_xlim(0, self.angle[-1])
+        ax.grid(linestyle='--', alpha=0.3)
+
+        xticks = [0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]
+        xtick_labels = [r'$0$', r'$\pi/2$', r'$\pi$', r'$3\pi/2$',r'$2\pi$']
         ax.set_xticks(xticks)
         ax.set_xticklabels(xtick_labels, fontsize=14, fontweight='bold')
-        ax.grid(linestyle='--', alpha=0.3)
         
         ax.fill_between(
             self.angle,  # X轴范围
