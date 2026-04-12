@@ -102,6 +102,7 @@ class ThreePhaseVoltage:
 
         ax.set_xlabel('Angle (rad)',fontweight='bold')
         ax.set_ylabel('zero-sequence Voltage (p.u.)',fontsize=14,fontweight='bold')
+        ax.tick_params(axis='y', labelsize=14)
         ax.set_xlim(0, self.angle[-1])
         ax.set_xticks(xticks)
         ax.set_xticklabels(xtick_labels, fontsize=14, fontweight='bold')
