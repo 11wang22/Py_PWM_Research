@@ -26,7 +26,31 @@ class ThreePhaseVoltage:
         Vzs_min = np.maximum(-1 - umin,-umax)
         return Vzs_max,Vzs_min
     
+    def data_plot(self,*parameters,Picsize=(7, 4.3)):
+        ##### plot three-phase voltage waveforms
+        plt.rcParams["font.family"] = "Times New Roman"  # set global font to Times New Roman
+        plt.rcParams["axes.unicode_minus"] = False      # fix negative sign display issue
+        plt.rcParams['mathtext.fontset'] = 'stix'
+        fig, ax = plt.subplots(figsize=Picsize)
+
+        ##### plot the data waveforms
+        for paramter in parameters:
+            ax.plot(self.wt, paramter,linewidth=2.0)
+              
+        ##### set grid label font size and weight
+        for label in ax.get_xticklabels() + ax.get_yticklabels():
+            label.set_fontsize(12)  
+            label.set_fontweight('bold')
+        
+        ##### set axis labels, limits, and grid    
+        ax.set_xlabel(r'$\theta$ (rad)', fontsize=14,fontweight='bold')
+        ax.set_ylabel('Voltage (p.u.)', fontsize=14,fontweight='bold')
+        ax.set_xlim(0,self.wt[-1])
+        ax.grid(linestyle='--', alpha=0.3)
+        plt.show()
+    
 if __name__ == "__main__":
     modulation_index = 0.90  # Example modulation index
     ClassThreePhaseVoltage = ThreePhaseVoltage(modulation_index)
     Vzs_max,Vzs_min = ClassThreePhaseVoltage.Vzslimit_cal()
+    ClassThreePhaseVoltage.data_plot(ClassThreePhaseVoltage.Va,ClassThreePhaseVoltage.Vb,ClassThreePhaseVoltage.Vc,Vzs_max,Vzs_min)
