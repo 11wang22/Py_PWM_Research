@@ -4,14 +4,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class ThreePhaseVoltage:
-    def __init__(self, modulation_index, fre=50, start_angle=0):
+    def __init__(self, modulation_index, fre=50, start_angle=0,time = 0.02):
+        ##### use data_rest to initialize the three-phase voltage parameters
+        self.data_reset(modulation_index, fre, start_angle,time)
+
+    def data_reset(self, modulation_index=0.90, fre = 50,start_angle=0,time = 0.02):
         ##### set modulation index limitation 0~2/sqrt(3)
         modulation_index = max(0,modulation_index)
         modulation_index = min(2 / np.sqrt(3),modulation_index)
         self.modulation_index = modulation_index
         
         ##### set three-phase voltage parameters
-        self.wt = np.linspace(0, 2*np.pi*fre*0.04, 10000)  # 50 Hz fundamental frequency
+        self.wt = np.linspace(0, 2*np.pi*fre*time, 1000)  # 50 Hz fundamental frequency
         self.start_anlge = start_angle # Starting phase angle
         self.Va = self.modulation_index * np.sin(self.wt + self.start_anlge)
         self.Vb = self.modulation_index * np.sin(self.wt - 2 * np.pi / 3 + self.start_anlge)

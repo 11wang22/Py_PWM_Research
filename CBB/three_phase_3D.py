@@ -1,68 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import tp_voltage as tpv
 
-class Threephase3D:
+class threephase3D(tpv.ThreePhaseVoltage):
     def __init__(self):
-        self.wt = np.arange(0, 2 * np.pi / 3, 2e-3)
-        self.Modu = np.arange(0, 2 / np.sqrt(3), 2e-3)
-        self.X = np.zeros((len(self.Modu), len(self.wt)))
-        self.Y = np.zeros((len(self.Modu), len(self.wt)))
-
-    def DataCreate(self):
-        X = self.wt
-        Y = self.Modu
-        X,Y = np.meshgrid(X,Y)
-        self.X = X
-        self.Y = Y
-        [row,line] = self.X.shape
-        self.vzmax = np.zeros((row,line))
-        self.vzmin = np.zeros((row,line))
-        
-    def VzmaxCal(self,wt,Modu):
-        ##### limit wt and Modu up and down
-        wt = min(wt,2 * np.pi / 3)
-        wt = max(wt,0)
-        Modu = min(Modu,2 / np.sqrt(3))
-        Modu = max(Modu,0)
-        
-        ##### calculate Vzmax
-        division_cave = np.pi / 3
-        umax = Modu * np.sin(wt + np.pi / 6)
-        if wt < division_cave:
-            umin = Modu * np.sin(wt - np.pi / 2)
-        else:
-            umin = Modu * np.sin(wt + 5 * np.pi / 6)
-        
-        Vzmax = min(1 - umax,-umin)
-        return Vzmax
+        super().__init__(modulation_index = 0.90)
+        self.Modu3D = np.linspace(0, 2 / np.sqrt(3), int(1e3))
+        self.X = np.zeros((len(self.Modu3D), len(self.wt)))
+        self.Y = np.zeros((len(self.Modu3D), len(self.wt)))
+        self.vzmax3D = np.zeros((len(self.Modu3D), len(self.wt)))
+        self.vzmin3D = np.zeros((len(self.Modu3D), len(self.wt)))
     
-    def VzminCal(self,wt,Modu):
-        ##### limit wt and Modu up and down
-        wt = min(wt,2 * np.pi / 3)
-        wt = max(wt,0)
-        Modu = min(Modu,2 / np.sqrt(3))
-        Modu = max(Modu,0)
-        ##### calculate Vzmin
-        division_cave = np.pi / 3
-        umax = Modu * np.sin(wt + np.pi / 6)
-        if wt < division_cave:
-            umin = Modu * np.sin(wt - np.pi / 2)
-        else:
-            umin = Modu * np.sin(wt + 5 * np.pi / 6)
-        Vzmin = max(-1 - umin,-umax)
-        return Vzmin
-    
-    def DataCal(self):
-        for i in range(self.vzmax.shape[0]):
-            for j in range(self.vzmax.shape[1]):
-                self.vzmax[i,j] = self.VzmaxCal(self.wt[j],self.Modu[i])
-                self.vzmin[i,j] = self.VzminCal(self.wt[j],self.Modu[i])
-                
-        print(self.vzmax)
-        print(self.vzmin)
+    def data3D_Cal(self):
+        for i in range(self.X.shape[0]):
+            self.data_reset(modulation_index = self.Modu3D[i])
+            self.vzmax3D[i,:],self.vzmin3D[i,:] = self.Vzslimit_cal()
+            for j in range(self.X.shape[1]):
+                self.X[i,j] = self.wt[j]
+                self.Y[i,j] = self.Modu3D[i]
 
-    def Dataplot(self):
+    def data3D_plot(self):
         plt.rcParams["font.family"] = "Times New Roman"  # 设置全局西文字体为 Times New Roman
         plt.rcParams["axes.unicode_minus"] = False       # 解决负号显示为方块的问题
         plt.rcParams['mathtext.fontset'] = 'stix'  # 让数学符号也匹配 Times 风格
@@ -91,25 +49,25 @@ class Threephase3D:
         ax.zaxis.line.set_color('#666666')
         
         ##### set view angle for better visibility of the 3D structure
-        ax.view_init(elev=20, azim=-45, roll=0)
+        ax.view_init(elev=30, azim=-45, roll=0)
         
         # ===================== colorbar settigns =====================
-        cmap = cm.coolwarm  # 你可以换成 cm.plasma / cm.inferno / cm.Blues
-        combined_data = np.concatenate([self.vzmax.ravel(), self.vzmin.ravel()])
+        cmap = cm.inferno  # 你可以换成 cm.plasma / cm.inferno / cm.Blues
+        combined_data = np.concatenate([self.vzmax3D.ravel(), self.vzmin3D.ravel()])
         vmin, vmax = combined_data.min(), combined_data.max()
         
         # ===================== plot two surfaces =====================
         surf2 = ax.plot_surface(
-            self.X, self.Y, self.vzmin,
+            self.X, self.Y, self.vzmin3D,
             cmap=cmap, alpha=0.6, vmin=vmin, vmax=vmax,
-            linewidth=0.2, edgecolor='k', rstride=20, cstride=20  # add grid lines for better visibility
-        )
+            antialiased=True, edgecolor='none'
+            )
                 
         surf1 = ax.plot_surface(
-            self.X, self.Y, self.vzmax,
+            self.X, self.Y, self.vzmax3D,
             cmap=cmap, alpha=0.6, vmin=vmin, vmax=vmax,
-            linewidth=0.2, edgecolor='k', rstride=20, cstride=20  # add grid lines for better visibility
-        )
+            antialiased=True, edgecolor='none'  
+            )
         cbar = fig.colorbar(surf1, ax=ax, shrink=0.5, pad=0.1)
 
         # ===================== label fonts =====================
@@ -119,8 +77,8 @@ class Threephase3D:
         ax.set_box_aspect(None, zoom=0.95)
 
         # ===================== X axis label =====================
-        xticks = [0, np.pi/6, np.pi/3, np.pi/2, 2*np.pi/3]
-        xtick_labels = [r'$0$', r'$\pi/6$', r'$\pi/3$', r'$\pi/2$',r'$2\pi/3$']
+        xticks = [0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]
+        xtick_labels = [r'$0$', r'$\pi/2$', r'$\pi$', r'$3\pi/2$',r'$2\pi$']
         ax.set_xticks(xticks)
         ax.set_xticklabels(xtick_labels, fontsize=12, fontweight='bold')
         
@@ -128,7 +86,6 @@ class Threephase3D:
         plt.show()
 
 if __name__ == "__main__":
-    ClassTest = Threephase3D()
-    ClassTest.DataCreate()
-    ClassTest.DataCal()
-    ClassTest.Dataplot()
+    ClassTest = threephase3D()
+    ClassTest.data3D_Cal()
+    ClassTest.data3D_plot()
